@@ -7,14 +7,16 @@ const count = document.getElementById('count');
 const total = document.getElementById('total');
 const movieSelect = document.getElementById('movie');
 
+populateUI();
+
 let ticketPrice = +movieSelect.value;
+
 
 // save selected movie index and price
 function setMovieData(movieIndex, moviePrice) {
     localStorage.setItem('selectedMovieIndex', movieIndex);
     localStorage.setItem('selectedMoviePrice', moviePrice);
 }
-
 
 
 // update total and count
@@ -34,7 +36,29 @@ function updateSelectedCount() {
     //save the selected seats to localStorage
     localStorage.setItem('selectedSeats', JSON.stringify(seatsIndex));
 }
-    
+
+
+// get data from localStorage and populate UI
+function populateUI() {
+    const selectedSeats = JSON.parse(localStorage.getItem('selectedSeats'));
+    // console.log(selectedSeats);
+
+    if (selectedSeats !== null && selectedSeats.length > 0) {
+        seats.forEach(function (seat, index) {
+            // take the choosen seats and change it's color
+            if (selectedSeats.indexOf(index) > -1) {
+                // console.log(seat); 
+                seat.classList.add('selected'); 
+            }
+        });
+    }
+
+    const selectedMovieIndex = localStorage.getItem('selectedMovieIndex');
+    if (selectedMovieIndex !== null) {
+        movieSelect.selectedIndex = selectedMovieIndex; 
+    }
+}
+
 
 // movie select event
 movieSelect.addEventListener('change', e => {
@@ -47,7 +71,6 @@ movieSelect.addEventListener('change', e => {
 });
 
 
-
 // seat click event
 container.addEventListener('click', (e) => {
     if (e.target.classList.contains('seat') && !e.target.classList.contains('occupied')) {
@@ -55,3 +78,7 @@ container.addEventListener('click', (e) => {
             updateSelectedCount();
     }
 });
+
+
+// Initial count and total set
+updateSelectedCount();
